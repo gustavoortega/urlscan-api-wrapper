@@ -96,7 +96,7 @@ try:
   log("ok",message)
   content = getScanUrl(resultScanUrl)
 except:
-  print( message)
+  log("error", message)
   raise
 
 try:
