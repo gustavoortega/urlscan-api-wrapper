@@ -68,7 +68,7 @@ def getScanUrl(url):
 
 #Upload de archivos con Tag "public=yes" para permitir acceso publico.
 def uploadToS3(filename, data):
-    s3 = boto3.resource('s3', region_name="us-west-1")
+    s3 = boto3.resource('s3')
     s3.Bucket(s3BucketName).put_object(Body= data, Key= filename, Tagging= "public=yes")
 
 #Manejo de logs en consola, de modo de contar con diferentes colores segun el mensaje sea de info, error o warning 
