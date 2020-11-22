@@ -1,7 +1,8 @@
 # urlscan-api-wrapper
 
 
-Instructions for containerized usage:
+
+<h1>Instructions for containerized usage</h1>
 
 git clone https://github.com/gustavoortega/urlscan-api-wrapper.git
 
@@ -12,7 +13,7 @@ docker build -t local:urlscan .
 docker run --rm -it local:urlscan --url "https://www.example.com/" --urlscankey "apikey"  --s3bucketname "bucketName" --visibility "choosefrom:public/private/unlisted"
 
 
-Instructions for usage on local machine:
+<h1>Instructions for usage on local machine</h1>
 
 git clone https://github.com/gustavoortega/urlscan-api-wrapper.git
 
