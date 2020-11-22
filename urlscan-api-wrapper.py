@@ -66,7 +66,7 @@ def getScanUrl(url):
     raise Exception("Se agoto el tiempo de espera")
 
 
-#Upload de archivos con Tag "public=yes" para permitir acceso publico.
+#Upload de archivos con Tag "public=yes" para permitir acceso publico. El tag es requerido unicamente debido al diseño de la bucket policy que realice.
 def uploadToS3(filename, data):
     s3 = boto3.resource('s3')
     s3.Bucket(s3BucketName).put_object(Body= data, Key= filename, Tagging= "public=yes")
