@@ -29,21 +29,6 @@ my_parser.add_argument('--visibility',
                        required=True,
                        help='Tipo de visibilidad. (private / public / unlisted')
 
-args = my_parser.parse_args()
-
-url = args.url
-visibility = args.visibility
-
-#Si no pasan la key como argumento, la obtengo como parámetro de AWS SSM 
-if args.urlscankey != None:
-  key_urlscan = args.urlscankey
-else:
-  key_urlscan = getParameterFromSsm('/urlscan-api-wrapper/prod/key-value')
-
-headers = dict({'API-Key':key_urlscan, 'Content-Type':'application/json;charset=UTF-8'})
-s3BucketName = args.s3bucketname
-
-
 #Submit de url a escanear, permitiendo especificar el tipo de visibilidad. Es importante utilizar la key para poder consumir la API.
 def submitScan(url):
   data = {'url': url, 'visibility': visibility}
@@ -99,7 +84,25 @@ def getParameterFromSsm(parameterName,shouldDecrypt=True):
   return((key['Parameter'])['Value'])
 
 
+
 #Start
+args = my_parser.parse_args()
+
+url = args.url
+visibility = args.visibility
+
+#Si no pasan la key como argumento, la obtengo como parámetro de AWS SSM 
+if args.urlscankey != None:
+  log('ok','Utilizando la key que paso como argumento')
+  key_urlscan = args.urlscankey
+else:
+  log('ok','Utilizando la key que obtengo de AWS SSM')
+  key_urlscan = getParameterFromSsm('/urlscan-api-wrapper/prod/key-value')
+  log('warning',key_urlscan)
+
+headers = dict({'API-Key':key_urlscan, 'Content-Type':'application/json;charset=UTF-8'})
+s3BucketName = args.s3bucketname
+
 #Comienzo con una solicitud a Urlscan de la url a escanear. Si todo esta ok, obtengo la URL donde puedo solicitar el resultado.
 try:
   message = "Submiteando el escaneo al sitio de UrlScan "+ url
@@ -123,7 +126,7 @@ except:
 try:
   message = "Subiendo archivo a S3"
   log("ok",message)
-  uploadToS3("resultado.json", content)
+  uploadToS3("resultadoSSM.json", content)
 except:
   log("error", message)
   raise
