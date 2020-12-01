@@ -15,7 +15,7 @@ my_parser.add_argument('--url',
 my_parser.add_argument('--urlscankey',
                        metavar='urlscankey',
                        type=str,
-                       required=True,
+                       required=False,
                        help='key a utilizar para API de Urlscan')
 my_parser.add_argument('--s3bucketname',
                        metavar='s3bucketname',
@@ -33,7 +33,13 @@ args = my_parser.parse_args()
 
 url = args.url
 visibility = args.visibility
-key_urlscan = args.urlscankey
+
+#Si no pasan la key como argumento, la obtengo como parámetro de AWS SSM 
+if args.urlscankey != None:
+  key_urlscan = args.urlscankey
+else:
+  key_urlscan = getParameterFromSsm('/urlscan-api-wrapper/prod/key-value')
+
 headers = dict({'API-Key':key_urlscan, 'Content-Type':'application/json;charset=UTF-8'})
 s3BucketName = args.s3bucketname
 
@@ -85,6 +91,12 @@ def log(type="",msg=""):
     print(f"{bcolors.OK}OK: " + msg + f"{bcolors.ENDC}")
   else:
     print(f"{bcolors.WARNING}WARN: " + msg + f"{bcolors.ENDC}")
+
+def getParameterFromSsm(parameterName,shouldDecrypt=True):
+  session = boto3.Session(region_name='sa-east-1')
+  ssm = session.client('ssm')
+  key = ssm.get_parameter(Name=parameterName, WithDecryption=True)
+  return((key['Parameter'])['Value'])
 
 
 #Start
