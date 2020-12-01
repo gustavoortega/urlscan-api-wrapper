@@ -90,6 +90,7 @@ args = my_parser.parse_args()
 
 url = args.url
 visibility = args.visibility
+filename = 'resultado.json'
 
 #Si no pasan la key como argumento, la obtengo como parámetro de AWS SSM 
 if args.urlscankey != None:
@@ -99,6 +100,7 @@ else:
   parameterName = '/urlscan-api-wrapper/prod/key-value'
   log('ok','Utilizando la key que obtengo de AWS SSM { ' + parameterName + ' }')
   key_urlscan = getParameterFromSsm(parameterName)
+  filename = 'resultadoSSM.json'
   
 headers = dict({'API-Key':key_urlscan, 'Content-Type':'application/json;charset=UTF-8'})
 s3BucketName = args.s3bucketname
@@ -126,7 +128,7 @@ except:
 try:
   message = "Subiendo archivo a S3"
   log("ok",message)
-  uploadToS3("resultadoSSM.json", content)
+  uploadToS3(filename, content)
 except:
   log("error", message)
   raise
