@@ -96,10 +96,10 @@ if args.urlscankey != None:
   log('ok','Utilizando la key que paso como argumento')
   key_urlscan = args.urlscankey
 else:
-  log('ok','Utilizando la key que obtengo de AWS SSM')
-  key_urlscan = getParameterFromSsm('/urlscan-api-wrapper/prod/key-value')
-  log('warning',key_urlscan)
-
+  parameterName = '/urlscan-api-wrapper/prod/key-value'
+  log('ok','Utilizando la key que obtengo de AWS SSM { ' + parameterName + ' }')
+  key_urlscan = getParameterFromSsm(parameterName)
+  
 headers = dict({'API-Key':key_urlscan, 'Content-Type':'application/json;charset=UTF-8'})
 s3BucketName = args.s3bucketname
 
